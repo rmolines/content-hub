@@ -36,9 +36,10 @@ If the user says "specify which," list all unused seeds and let them choose by n
 
 ### 3. Load context
 
-Read both:
+Read all of these:
 - `~/git/content-hub/references/style-guide.md` — writing format and tone rules
 - `~/git/content-hub/.claude/CLAUDE.md` — strategic identity, audience, and principles
+- The seed's context file at `~/git/content-hub/seeds/<slug>.md` (derive slug from the seed headline: lowercase, hyphens, no punctuation, max 6 words). This file contains the raw material and reasoning captured at the moment of insight — use it heavily to ground the article in specifics. If the file doesn't exist, proceed without it.
 
 ### 4. Research current discourse
 
