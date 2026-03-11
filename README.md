@@ -55,7 +55,7 @@ content-hub/
 
 Clone the repo and use it. Claude Code is required — ensure you have it installed:
 ```bash
-git clone https://github.com/your-username/content-hub.git ~/git/content-hub
+git clone https://github.com/rmolines/content-hub.git ~/git/content-hub
 cd ~/git/content-hub
 ```
 

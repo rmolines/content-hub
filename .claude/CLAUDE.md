@@ -82,3 +82,8 @@ Capabilities in this context:
 - **Capture seeds:** when a new insight surfaces in conversation, suggest appending it to `seeds.md` with the correct format.
 
 Do not generate generic content advice. Everything should be grounded in the specific identity, strategy, and source material described here.
+
+## Pitfalls
+
+**Context files are silently optional in /write-article.**
+If `seeds/<slug>.md` doesn't exist (e.g., slug mismatch, manual seed entry without running /capture), /write-article silently skips it and generates the article without the raw captured context. The article will be shallower. Always use /capture to add seeds — never append manually to seeds.md without also creating the corresponding context file. The slug is derived from the headline: lowercase, hyphens, no punctuation, truncated to max 6 words.
