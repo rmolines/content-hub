@@ -1,5 +1,50 @@
 # Handover
 
+## marketing-session v2 — voice engine + interactive replies + compound learning — 2026-03-12
+
+### What was done
+
+Addressed three structural gaps in `/marketing-session` v1: sessions started from zero every time (no learning), replies were generated without knowing the user's stance, and posts had no voice profile so output was generic. Built three pillars to fix this.
+
+**Pillar 1 — Voice Engine:** co-constructed voice profile at `marketing/voice-profile.md`. The file is seeded during the first session via a 5-question calibration, then evolves automatically. Both `/post` and `/marketing-session` read it before generating anything. `/post` now runs a brief learning loop on approval — it extracts what made the approved post work and appends it to the voice profile.
+
+**Pillar 2 — Interactive Reply Flow:** Phase 3 of `/marketing-session` was refactored to ask for the user's stance before generating reply options (agree / disagree / take a specific angle). This eliminates the "here are 3 generic replies" problem. The reply is grounded in what the user actually thinks, not a neutral hedge.
+
+**Pillar 3 — Compound Learning:** New Phase 5 at session close. Claude asks for what worked and what felt off, writes a timestamped journal entry to `marketing/journal/YYYY-MM-DD.md` using `_template.md` as the schema, updates the voice profile when a pattern has appeared 3+ times across entries, and appends an insight row to the journal log. Sessions accumulate rather than reset.
+
+Pushed directly to main (no PR — this is a skills/content repo, not a product). Two commits: eae5776 (full v2) and the subsequent simplify pass.
+
+### Key decisions
+
+- **Voice profile as a living file, not a prompt injection:** The profile is a real artifact the user can read and edit. It grows from session data, not from the user filling out a form upfront. The first session runs calibration; subsequent sessions skip it if the file already exists.
+- **Journal is a directory, not a flat log:** `marketing/journal/` with one file per session (`YYYY-MM-DD.md`) makes individual sessions reviewable. A flat `journal.md` would become unreadable after 20 sessions.
+- **Learning threshold at 3 repetitions before promoting to voice profile:** Prevents noise from a single good session from hardening into permanent style. A pattern has to surface across multiple sessions before it becomes a rule.
+- **Phase 5 is mandatory close, not optional:** The learning loop runs at every session end, not on a flag. This removes the decision cost that would cause it to get skipped.
+- **`/post` participates in the learning loop:** Every approved post is a signal. `/post` extracts what worked and appends it to the voice profile immediately, so the profile improves even between sessions.
+
+### Pitfalls discovered
+
+- **Voice profile does not exist on first run:** If the user runs `/marketing-session` or `/post` before the first session that runs calibration, the voice profile read step silently finds nothing. Skills must handle the missing-file case gracefully and fall back to calibration or a sensible default. This is not currently protected.
+- **Journal entries could drift from template:** `_template.md` is a reference schema, not enforced. If Phase 5 skips fields or adds new ones organically, the journal entries become inconsistent and harder to parse in future sessions. Consider making the template a strict schema that Phase 5 fills field by field.
+- **`/post` learning loop on approval is unguarded:** If the user approves a post but the voice profile update step fails silently (file not found, write error), the learning is lost with no indication. No error handling currently in place.
+
+### Key files
+
+- `/Users/rmolines/git/content-hub/.claude/commands/marketing-session.md`: full v2 rewrite — Phase 3 interactive stance, Phase 5 compound learning loop, voice profile read at session start
+- `/Users/rmolines/git/content-hub/.claude/commands/post.md`: voice profile integration (read before generating), learning loop on post approval (extracts what worked, appends to voice profile)
+- `/Users/rmolines/git/content-hub/marketing/voice-profile.md`: living artifact — tone, style rules, patterns confirmed across sessions; seeded on first session, evolved by Phase 5 and `/post` approval loop
+- `/Users/rmolines/git/content-hub/marketing/journal/_template.md`: per-session schema — date, what worked, what felt off, patterns, voice profile deltas
+
+### Next steps
+
+- Guard the missing voice profile case in both `/post` and `/marketing-session` — if file absent, run calibration inline rather than failing silently
+- Build anchor accounts list (still outstanding from v1 next steps) — the interactive reply flow makes this more urgent because better post discovery = better stance options
+- Mark seeds as posted on `/post` approval — still outstanding from v1, now even more important since `/post` already has an approval hook that could carry this
+- Add a `/journal` skill for reviewing session history — surfaces patterns across entries, useful input before a session to recall what worked last time
+- Consider enforcing template schema in Phase 5 by having Claude fill fields explicitly rather than free-writing the entry
+
+---
+
 ## Content Hub — Initial delivery — 2026-03-11
 
 ### What was done

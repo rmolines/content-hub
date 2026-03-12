@@ -25,3 +25,17 @@
 **Second learning:** This gap is invisible at review time unless you trace the full lifecycle of a data artifact across all skills that touch it. A per-skill correctness check won't catch it. PRDs for multi-skill deliveries should include a state-transition diagram or at minimum an explicit list of every file each skill reads and writes.
 
 **Where this applies:** Any future set of skills that share a queue, a log, or a capture file: task lists, idea backlogs, bug queues, session histories.
+
+---
+
+## 2026-03-12 — marketing-session v2 delivery
+
+### Layered state with frequency-based promotion avoids premature rule solidification
+
+**What happened:** v1 of `/marketing-session` had no mechanism to evolve its own behavior from session data. The naive fix would have been to ask the user to manually update the voice profile after each session. Instead, v2 introduced three state layers with explicit promotion rules: (1) per-session journal files in `marketing/journal/`, which capture raw patterns; (2) a voice profile in `marketing/voice-profile.md`, which holds durable rules; and (3) a frequency threshold — a pattern must appear 3+ times across journal entries before it gets promoted to the voice profile. The threshold prevents premature promotion of one-off observations into permanent rules.
+
+**The generalizable pattern:** When a skill system needs to evolve its own behavior from usage data, don't write observations directly to the rule layer. Introduce an intermediate event log (journal, history, log file) and a promotion threshold. Observations go into the log cheaply and without commitment. Promotion to a rule requires evidence of recurrence. This gives the system a memory without locking in behavior from a single data point.
+
+**Second learning:** A write-back that's conditional on user approval (as in `/post`'s diff analysis loop) is a different contract than a write-back that's automatic. Conditional write-back is appropriate when the rule being learned is about subjective preference — the user must confirm the pattern before it's generalized. Automatic write-back is appropriate when the pattern is objective (e.g., 3+ occurrences of the same result). Both belong in the same system; they apply to different kinds of knowledge.
+
+**Where this applies:** Any skill that needs to personalize over time: writing assistants that learn voice preferences, code generation tools that learn style conventions, session-based workflows that accumulate engagement intelligence. The three-layer pattern (event log → threshold → rule layer) is reusable wherever you want a system that improves without human curation of every update.

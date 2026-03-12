@@ -116,3 +116,9 @@ If `seeds/<slug>.md` doesn't exist (e.g., slug mismatch, manual seed entry witho
 
 **`/post` never marks seeds as posted, so `/marketing-session` treats all seeds as perpetually available.**
 Phase 1.3 of `/marketing-session` assesses available material by reading `seeds.md`, but `/post` writes no state after publishing. A seed that was posted last week looks identical to one that was never used. If a `/posted` command or an updated `/post` is built to track this, the expected format is: change `- [ ]` to `- [x]` and append `| posted: <YYYY-MM-DD>` on the same line.
+
+**`marketing/journal` is a directory, not a file — skills that treat it as a single file will fail or overwrite it.**
+Phase 1.1 reads the last 3-5 dated files inside `marketing/journal/` (format: `YYYY-MM-DD.md`); Phase 5.2 writes one file per day and appends if the date file already exists. Any skill or agent that does `Read marketing/journal` or `Write marketing/journal` directly will either get a directory error or destroy the structure.
+
+**`marketing/voice-profile.md` missing or empty causes silent voice degradation, not an error.**
+Both `/post` and `/marketing-session` read `marketing/voice-profile.md` to apply tone constraints and banned words, but neither fails or warns if the file is absent. On a fresh clone or after accidental deletion, the skills run without voice constraints and generate content that violates the established voice — with no indication anything is wrong.

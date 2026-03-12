@@ -1,5 +1,11 @@
 # Changelog
 
+## marketing-session-v2 — direct push — 2026-03-12
+**Type:** feat
+**PRD:** ~/.claude/discoveries/ch/marketing-session-v2/prd.md
+**Commit:** `git show eae5776`
+**Decisions:** see LEARNINGS.md#marketing-session-v2
+
 ## head-of-marketing — PR #1 — 2026-03-12
 **Type:** feat
 **PRD:** ~/.claude/discoveries/ch/head-of-marketing/prd.md
