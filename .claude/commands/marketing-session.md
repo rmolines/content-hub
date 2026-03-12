@@ -329,31 +329,6 @@ Output:
 
 ---
 
-## Cold Start Strategy Reference (embedded)
-
-This framework is baked into session planning — Claude applies it automatically.
-
-**Engage → Share → Create** is the growth order for new accounts:
-
-1. **Engage first (0–500 followers).** Nobody sees your original posts yet. Replies on anchor accounts (5k–100k followers) get you in front of their audience. 80% of session time goes here. Goal: 5–10 substantive replies per session.
-
-2. **Balance (500–2k followers).** You have enough social proof that original posts get some traction. 60% engagement, 40% creation. Share articles and threads, but still keep the reply game going.
-
-3. **Content-first (2k+ followers).** Your original posts have reach. Flip to 60% creation and distribution, 40% engagement. Replies are still important for relationship-building, not primary growth.
-
-**Reply game rules:**
-- Target accounts: 5k–100k followers in AI agents, dev tools, building in public, indie hackers niches.
-- Avoid accounts that are too large (1M+) — your reply gets buried instantly.
-- Avoid accounts with no engagement — the audience isn't active.
-- Reply quality over quantity. One reply that adds a new dimension to the conversation beats five generic affirmations.
-- Replies must do one of: extend the argument, add a counterpoint, or share a concrete experience. "Interesting take" and "totally agree" are noise.
-
-**Platforms:**
-- Twitter/X: threads, single posts, replies. Format for skim-reading — short sentences, line breaks, punchy opening.
-- LinkedIn: narrative posts, 3–5 paragraphs. The first 2 lines carry the weight (pre-fold). Professional but not corporate.
-
----
-
 ## What NOT to Do
 
 - Do NOT publish anything. The user copies and posts manually.

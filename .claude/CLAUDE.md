@@ -100,8 +100,8 @@ Claude operating here helps build audience on Twitter and LinkedIn.
 - 2k+: content-first
 
 **Platform tone:**
-- Twitter: informal, real-time, hooks curtos, links na reply
-- LinkedIn: profissional mas autêntico, carousels, interpretar o insight
+- Twitter: informal, real-time, short hooks, links in reply
+- LinkedIn: professional but authentic, carousels, interpret the insight for a broader audience
 
 **Intelligence:** analyses from `/reverse` are saved in `references/reverse/` — consult when crafting posts or planning sessions.
 
