@@ -36,3 +36,40 @@ Built a "Claude Code CMS" repo to turn daily builder insights into published con
 - Run `/write-article` to draft the remaining 3 unused seeds
 - Decide on hosting platform for long-form articles (GitHub Pages, Substack, or gist) when Twitter thread format proves traction
 - Consider a `/thread` skill that converts an article draft into a Twitter thread format
+
+---
+
+## head-of-marketing — /post + /marketing-session — 2026-03-12
+
+### What was done
+
+Added audience-building capability to content-hub. The problem was zero presence on Twitter and LinkedIn, no process for going from passive consumer to consistent producer, and no mental model of how audiences grow. Three blockers: inertia (every post was a decision from scratch), fear of posting to nobody, and no marketing knowledge.
+
+Built two skills: `/post` transforms a seed, article, or free text into a platform-ready post (Twitter or LinkedIn), with a review loop until approved. `/marketing-session` runs an assisted 1-hour session — Claude evaluates what's available to post, produces a prioritized session plan, activates CronCreate-paced reminders (reply game every 15min, progress check every 30min), and closes cleanly when done. Updated `.claude/CLAUDE.md` with a Marketing section documenting the role, skills, cold start strategy, and platform tone differences.
+
+PR #1, merged at af572e8.
+
+### Key decisions
+
+- **Session-assisted model over daily automation:** CronCreate is session-only and dies with the session — this is a feature, not a limitation. It forces dedicated blocks (1h, 2-3x/week) rather than ambient noise, and solves inertia without requiring persistent infrastructure.
+- **Cold start strategy embedded in skills:** The Engage → Share → Create framework (Arvid Kahl) is baked into `/marketing-session` — the skill asks follower count at session start and adjusts the plan weighting (0-500: 80% reply game; 500-2k: 60/40; 2k+: content-first). Marketing knowledge is in the system, not in the user's head.
+- **Chrome integration awareness added post-delivery:** After the skills were merged, it became clear that the reply game flow (WebSearch → find posts → suggest replies) would be much smoother with a way to open URLs directly. Noted as a tool gap but not blocked — user copies the URL manually for now.
+- **Tool gap reporting:** `/marketing-session` explicitly surfaces the Chrome/browser gap in the reply game cron prompt so the user knows what's missing and why the workflow has friction there.
+
+### Pitfalls discovered
+
+- **Seed marking lifecycle gap:** Seeds used as the source for a `/post` are never marked as posted in `seeds.md`. The checkbox status stays `[ ]` even after a post goes live. There is no handoff between `/post` (which knows a seed was used) and the backlog status. Seeds can be picked up again in future sessions without knowing they already generated a published post.
+- **Follower count asked every session:** `/marketing-session` asks for follower count at session start to calibrate the plan. This is intentional (no persistence by design — avoids a stale metrics file), but it creates mild friction every time. Accepted tradeoff for v1.
+
+### Key files
+
+- `/Users/rmolines/git/content-hub/.claude/commands/post.md`: skill — parses input, loads voice/reverse-intelligence context, generates platform-specific post (Twitter thread or LinkedIn text), runs adjustment loop until approved or discarded
+- `/Users/rmolines/git/content-hub/.claude/commands/marketing-session.md`: skill — 4 phases (setup, cron activation, active session, close) with cold start strategy embedded; uses CronCreate for reply game and progress check
+- `/Users/rmolines/git/content-hub/.claude/CLAUDE.md`: updated with `## Marketing` section — skills reference, cold start framework, platform tone (Twitter vs LinkedIn), intelligence source
+
+### Next steps
+
+- Build anchor accounts list (20-30 accounts, 5k-100k followers, AI agents / dev tools / building-in-public niches) — reply game cron needs this to find the right posts fast
+- Mark seeds as posted on `/post` approval — add a step to `/post` that updates the checkbox in `seeds.md` when user confirms publish
+- `/engage` standalone — suggest posts to comment on outside of a full session, for days with only 10min available
+- Metrics tracking — decide on format (manual log in `references/metrics.md`?) once there's enough data to make the structure obvious; not before

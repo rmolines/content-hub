@@ -109,3 +109,6 @@ Claude operating here helps build audience on Twitter and LinkedIn.
 
 **Context files are silently optional in /write-article.**
 If `seeds/<slug>.md` doesn't exist (e.g., slug mismatch, manual seed entry without running /capture), /write-article silently skips it and generates the article without the raw captured context. The article will be shallower. Always use /capture to add seeds — never append manually to seeds.md without also creating the corresponding context file. The slug is derived from the headline: lowercase, hyphens, no punctuation, truncated to max 6 words.
+
+**`/post` never marks seeds as posted, so `/marketing-session` treats all seeds as perpetually available.**
+Phase 1.3 of `/marketing-session` assesses available material by reading `seeds.md`, but `/post` writes no state after publishing. A seed that was posted last week looks identical to one that was never used. If a `/posted` command or an updated `/post` is built to track this, the expected format is: change `- [ ]` to `- [x]` and append `| posted: <YYYY-MM-DD>` on the same line.
