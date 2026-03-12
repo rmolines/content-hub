@@ -57,8 +57,20 @@ Read all of these in parallel:
 - `~/git/content-hub/seeds.md` — filter to `- [ ]` lines (unused seeds that could become posts)
 - `~/git/content-hub/articles/` — list files to identify recent articles that haven't been shared yet
 - `~/git/content-hub/references/reverse/` — if it exists, read for intelligence on what's resonating in the niche
+- `~/git/content-hub/marketing/voice-profile.md` — voice profile (tone, banned words, AI anti-patterns, reference samples)
+- `~/git/content-hub/marketing/journal/` — read the last 3-5 session files (sorted by date descending). Use previous session patterns, engagement data, and anchor accounts to inform session planning. Avoid repeating approaches that didn't work. Prioritize angles and accounts that showed strong engagement.
 
-### 1.2 Cold start calibration
+### 1.2 Journal-informed planning
+
+If journal entries exist from previous sessions, extract:
+- **What worked:** angles and post types that got engagement
+- **What didn't:** approaches to avoid or deprioritize
+- **Anchor accounts:** accounts that responded well — prioritize engaging with them again
+- **Patterns trending toward promotion:** any pattern close to the 3-occurrence threshold
+
+Use this intelligence throughout the session. Reference it when suggesting angles for replies.
+
+### 1.3 Cold start calibration
 
 If this feels like an early session (no session history in context), ask:
 
@@ -72,15 +84,15 @@ Use the answer to set the engagement/creation ratio for the session plan:
 
 Store the follower count in working memory for the session. Do not ask again within the same session.
 
-### 1.3 Assess available material
+### 1.4 Assess available material
 
 From what you read:
 
 - **Unposted articles:** articles that exist in `articles/` but aren't referenced in any seed `- [x]` line with a `posted:` date — these are ready to share.
 - **Quick post candidates:** unused seeds (`- [ ]`) with a tight concept that could be a standalone tweet or LinkedIn post without needing a full article.
-- **Engagement targets:** find 3-5 accounts in the AI agents, dev tools, building-in-public, and indie hackers niches with 5k–100k followers who have posted in the last 24–48 hours. These are reply game targets. If Chrome is available: browse Twitter/X directly to find active threads with engagement. If not: use WebSearch.
+- **Engagement targets:** If Chrome is available: browse the user's Twitter/X **For You feed** directly. This surfaces the most relevant posts algorithmically. Pick 3-5 posts worth replying to. If Chrome is not available: use WebSearch to find 3-5 accounts in the AI agents, dev tools, building-in-public, and indie hackers niches with 5k-100k followers who have posted in the last 24-48 hours. If journal has anchor accounts that responded well previously, prioritize checking their recent posts.
 
-### 1.4 Present session plan
+### 1.5 Present session plan
 
 Output a prioritized plan like this (adjust times and tasks based on follower tier and available material):
 
@@ -112,28 +124,28 @@ Schedule at an off-minute mark (e.g., `:07`, `:22`, `:37`, `:52`). The prompt fo
 ```
 Marketing session — reply game check-in.
 
-Find 2-3 recent posts (last 24h) from accounts in these niches:
+Primary method (Chrome required): Open the user's Twitter/X For You feed. Scroll through
+and find 2-3 posts worth replying to. The For You feed surfaces posts the algorithm
+considers relevant — this is where natural engagement happens.
+
+Fallback (no Chrome): Use WebSearch to find recent posts from accounts in these niches:
 - AI agents and LLM tooling
 - Developer tools and CLI
 - Building in public / indie hacking
 - Open source tools
 
-If Chrome integration is active: browse Twitter/X directly — check the user's feed,
-trending topics in the niche, and recent posts from anchor accounts. This gives better
-context than search results because you see the actual conversation and replies.
+Target accounts with 5k–100k followers. Prioritize posts with some engagement but not
+viral — the conversation is still open.
 
-If Chrome is not active: use WebSearch to find posts.
-
-Target accounts with 5k–100k followers. Prioritize posts that have some engagement but aren't viral — the conversation is still open.
-
-For each post found, output:
-- Post URL or clear description (account name + opening line)
-- A substantive reply suggestion that: extends the argument, adds a counterpoint, or shares a concrete experience from building launchpad or other real work. No "great post!" filler. No generic encouragement. Add something the original poster and their audience would find worth reading.
+For each post found, show the FULL original post text and URL — do NOT summarize or
+paraphrase. Then suggest angles. Do NOT generate full replies.
 
 Format:
 ---
-Post: [account] — "[opening line]" [URL if available]
-Reply: [suggested reply text — ready to copy-paste]
+@account (Xk followers) — [URL]
+"[FULL post text, quoted exactly]"
+
+Angle options: agree+extend / counterpoint / share experience from [relevant project]
 ---
 
 Reminder: the user copies and posts manually. Do not claim to post anything.
@@ -177,24 +189,51 @@ Stay active between cron fires. Respond to what the user asks. Common requests:
 If the user asks to generate a tweet thread or LinkedIn post:
 - For Twitter/X threads: invoke the logic from `/post` if it exists, or generate inline using the seed or article they specify. Follow the voice from `.claude/CLAUDE.md` — builder-first, concept-naming, no fluff.
 - For LinkedIn: adapt the same content but write in longer paragraphs. LinkedIn rewards narrative. Still no corporate speak. The hook is the first 2 lines (visible before "see more" fold).
+- Read `marketing/voice-profile.md` and apply all constraints: tone, banned words, AI anti-patterns. If the voice profile has reference samples, match their style.
+- **Humanizer pass:** after generating the draft, run it through the humanizer skill (`~/.claude/skills/humanizer/SKILL.md`). Apply the two-pass process: rewrite to remove AI patterns, then audit ("what makes this obviously AI generated?") and revise. Present only the final version to the user.
 - Output the post as copy-paste ready text. Label it clearly: `Twitter thread:` or `LinkedIn post:`.
 
-### Reply suggestions for a specific post or thread
+### Reply to a specific post or thread
 
 If the user pastes a URL or describes a post they want to reply to:
-- Use WebSearch to fetch the post content if a URL is provided.
-- Generate 2-3 reply options with different angles: one that extends the argument, one that adds a counterpoint, one that shares a concrete builder experience.
-- All replies must add genuine insight. Nothing generic.
+
+1. **Present the post** — use Chrome (preferred) or WebSearch to fetch the post content. Show:
+   - Author, handle, and follower count (if visible)
+   - **Full original post text** — quote it exactly, do not summarize or paraphrase
+   - Direct URL to the post
+   - Key replies already posted (if visible — avoid repeating what's been said)
+
+2. **Ask stance** — before generating anything, ask:
+   > Do you agree, disagree, or want a different angle on this?
+
+   Wait for the user to respond. Do NOT generate a reply until you have their direction.
+
+3. **Generate one draft** — based on the user's stance:
+   - "agree" → generate an agree+extend reply: acknowledge the point briefly, then add a new dimension from builder experience
+   - "disagree" → generate a respectful counterpoint grounded in concrete experience
+   - specific angle provided → follow that direction
+   - Apply voice profile constraints. Never use banned words. Match the tone defined in the profile. The reply must add genuine insight — no filler.
+   - **Humanizer pass:** run the draft through the humanizer patterns (`~/.claude/skills/humanizer/SKILL.md`) before presenting. Remove em-dashes, negative parallelisms, AI vocabulary, and significance inflation. For short replies (1-2 sentences), a quick mental pass is enough — no need for full two-pass process.
+
+4. **Fine-tuning loop** — present the draft and ask:
+   > Use this? (yes / adjust [what])
+
+   Maximum 2 refinement rounds. If not converged after 2, ask:
+   > What's missing? Tell me the core point you want to make and I'll rewrite from scratch.
+
+5. **Final copy** — copy the approved reply to the user's clipboard using `pbcopy` (run via Bash: `echo "<reply text>" | pbcopy`). Confirm:
+   > Copied to clipboard. Paste and post.
 
 ### Draft review
 
 If the user pastes a draft for review:
 - Apply the principles from `.claude/CLAUDE.md`: does it lead with original insight, does it name or reframe a concept, is the tone right, does it have the correct CTA (exactly one), no hedging, no fluff.
+- Read `marketing/voice-profile.md` and check the draft against all constraints: banned words, AI anti-patterns, tone match. Flag any violations specifically.
 - Give specific feedback: quote the sentence that needs work, say why, suggest the fix.
 
 ### Track what was posted
 
-If the user says "I posted X" — acknowledge it, track it in working memory for the session summary in Phase 4. Do not write anything to disk.
+If the user says "I posted X" — acknowledge it, track it in working memory for the session summary in Phase 4. Do not write anything to disk here.
 
 ---
 
@@ -222,7 +261,71 @@ Session summary:
 
 Use what the user reported during the session to fill in the actuals. Estimate duration from cron fire count if needed.
 
-The summary is informational. Do NOT save it to a file. Do NOT create a session log, metrics file, or any persistent artifact.
+The summary is informational. Do NOT save it to a file here — that happens in Phase 5.
+
+---
+
+## Phase 5 — Compound Learning
+
+Runs automatically after Phase 4 close — no opt-in needed.
+
+### 5.1 Pattern capture
+
+For each reply and post generated in this session, ask the user (briefly, rapid-fire):
+
+> Quick debrief — for each item, tell me: posted? any engagement? (just rough: nothing / some likes / good conversation / took off)
+
+List the items from the session for easy reference. Accept terse answers.
+
+Then internally classify each item:
+- Angle used: agree+extend / counterpoint / reframe / concrete experience / original insight
+- Post type it replied to: hot take / tutorial / build log / question / announcement
+- Result: no engagement / some / strong
+
+### 5.2 Journal update
+
+Write today's session to `~/git/content-hub/marketing/journal/YYYY-MM-DD.md` (one file per day). If a file for today already exists, append the new session entry. Use this format:
+
+```
+## Session — YYYY-MM-DD
+
+**Duration:** ~Xmin
+**Replies posted:** N
+**Original posts:** description
+
+### Highlights
+- [what worked, what didn't — based on user's debrief]
+
+### Anchor accounts engaged
+- @account — topic — result
+
+### Patterns observed
+- [angle] on [post type] → [result]
+
+### Next session suggestion
+- [what to prioritize based on patterns + unused seeds]
+```
+
+### 5.3 System evolution
+
+After writing the journal entry, read the last 5-10 journal files from `marketing/journal/`. If any pattern appears 3+ times with positive results:
+
+- Promote it to a rule. Output:
+  > Pattern detected: "[pattern description]" has worked [N] times. Promoting to voice profile / skill instruction.
+
+- Write the rule to the appropriate place:
+  - Voice/tone pattern → append to `marketing/voice-profile.md` in the relevant section
+  - Engagement pattern → add as instruction in this skill's Phase 3
+
+If no pattern has hit 3 occurrences yet, say:
+> No patterns ready for promotion yet. [N] sessions until next review.
+
+### 5.4 Next session suggestion
+
+Based on the journal patterns + available seeds in `seeds.md`, suggest what the next session should focus on. One sentence.
+
+Output:
+> Session complete. Journal updated. Next session: [suggestion].
 
 ---
 
@@ -254,7 +357,7 @@ This framework is baked into session planning — Claude applies it automaticall
 ## What NOT to Do
 
 - Do NOT publish anything. The user copies and posts manually.
-- Do NOT persist session data to files. No metrics.md, no session-log.md, no notes.
+- Do NOT persist session data to files other than `marketing/journal/YYYY-MM-DD.md`.
 - Do NOT use CronCreate for anything beyond the current session.
 - Do NOT suggest engagement pods, follow-for-follow, or any growth-hack tactics.
 - Do NOT generate generic content. Everything must be grounded in the user's actual projects and real builder experience.

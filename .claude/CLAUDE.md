@@ -105,6 +105,10 @@ Claude operating here helps build audience on Twitter and LinkedIn.
 
 **Intelligence:** analyses from `/reverse` are saved in `references/reverse/` — consult when crafting posts or planning sessions.
 
+## Language
+
+All interactions in this repo — skill outputs, responses, suggestions, reviews — must be in **English**. The target audience is English-speaking Twitter/X and LinkedIn. Portuguese only in the global CLAUDE.md instructions that apply across repos.
+
 ## Pitfalls
 
 **Context files are silently optional in /write-article.**

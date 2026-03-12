@@ -36,6 +36,7 @@ Wait for the user to respond before continuing.
 
 Always read:
 - `~/git/content-hub/.claude/CLAUDE.md` — voice, tone, audience identity, and strategy principles
+- `~/git/content-hub/marketing/voice-profile.md` — voice constraints: tone, banned words, AI anti-patterns, reference samples
 
 If source is an article path or slug: read the full article file.
 
@@ -55,6 +56,8 @@ If you cannot extract a single sharp insight from the source material, stop and 
 
 Do not write a post that is vague or summarizes instead of making a claim.
 
+Check the insight and planned framing against the voice profile's banned words and AI anti-patterns. If the natural phrasing would violate a constraint, find an alternative before drafting.
+
 ### 4. Generate the post
 
 Apply the correct format for the platform.
@@ -62,6 +65,8 @@ Apply the correct format for the platform.
 ---
 
 #### Twitter format rules
+
+Apply all constraints from `marketing/voice-profile.md`: tone, banned words, AI anti-patterns. If reference samples exist in the profile, match their style and cadence.
 
 Decide whether the insight fits in a single tweet (≤280 chars) or requires a thread (3-8 tweets).
 
@@ -85,6 +90,8 @@ Do not add emojis unless the user explicitly asks.
 
 #### LinkedIn format rules
 
+Apply all constraints from `marketing/voice-profile.md`: tone, banned words, AI anti-patterns. If reference samples exist in the profile, match their style and cadence.
+
 Write a text post of 1000-1500 characters.
 
 **Structure:**
@@ -101,6 +108,17 @@ Write a text post of 1000-1500 characters.
 Do not add emojis unless the user explicitly asks.
 
 ---
+
+### 4b. Humanizer pass
+
+Before presenting, run the generated post through the humanizer patterns (`~/.claude/skills/humanizer/SKILL.md`):
+
+1. Scan for AI patterns: em-dashes, negative parallelisms ("not just X, it's Y"), significance inflation, AI vocabulary, copula avoidance, rule-of-three, superficial -ing phrases
+2. Rewrite any problematic sections
+3. Self-audit: "What makes this obviously AI generated?" Fix remaining tells.
+4. Present only the final humanized version
+
+For single tweets (short text), a quick mental pass is enough. For threads and LinkedIn posts, do the full two-pass process.
 
 ### 5. Present the output
 
@@ -163,9 +181,15 @@ If the user says "adjust [what]": apply the requested change, re-present the ful
 
 If the user says "try different angle": generate a new post from a different entry point — different hook, different framing of the same insight — and present it.
 
-If the user says "yes": output:
+If the user says "yes": copy the approved post to the user's clipboard using `pbcopy` (run via Bash: `printf "%s" "<post text>" | pbcopy`). Output:
 
-> Post ready. Copy and publish manually.
+> Copied to clipboard. Paste and publish.
+
+After the user approves, analyze the diff between the first generated version and the final approved version. If the user made meaningful edits (not just typo fixes):
+- Identify what changed and why (tone shift, word choice, structure)
+- Suggest updating the voice profile: "I noticed you [changed X to Y]. Should I update the voice profile to reflect this preference?"
+- If yes: append the learned pattern to the appropriate section in `marketing/voice-profile.md`
+- If the post is strong, suggest adding it as a reference sample: "Add this to voice profile reference samples? (yes/no)"
 
 If the user discards the post: stop without saving anything.
 
