@@ -80,8 +80,30 @@ Capabilities in this context:
 - **Review drafts:** apply the principles above — does it name a concept, does it lead with original insight, is the tone right, is the CTA appropriate.
 - **Suggest topics from source repos:** read `~/git/feature-lifecycle/` to surface concepts worth writing about. Look for design decisions, naming choices, architectural patterns that aren't documented elsewhere.
 - **Capture seeds:** when a new insight surfaces in conversation, suggest appending it to `seeds.md` with the correct format.
+- **Run marketing sessions:** orchestrate assisted sessions for audience building via `/marketing-session`
+- **Generate platform posts:** transform content into Twitter/LinkedIn posts via `/post`
 
 Do not generate generic content advice. Everything should be grounded in the specific identity, strategy, and source material described here.
+
+## Marketing
+
+This repo also functions as a **personal head of marketing**. Beyond content strategy,
+Claude operating here helps build audience on Twitter and LinkedIn.
+
+**Skills:**
+- `/post <twitter|linkedin> [source]` — transform a seed, article, or insight into a platform-ready post
+- `/marketing-session` — run an assisted marketing session with paced reply game, posting, and engagement
+
+**Cold start strategy (Engage → Share → Create):**
+- 0-500 followers: 80% reply game, 20% original posts
+- 500-2k: 60/40 split
+- 2k+: content-first
+
+**Platform tone:**
+- Twitter: informal, real-time, hooks curtos, links na reply
+- LinkedIn: profissional mas autêntico, carousels, interpretar o insight
+
+**Intelligence:** analyses from `/reverse` are saved in `references/reverse/` — consult when crafting posts or planning sessions.
 
 ## Pitfalls
 
